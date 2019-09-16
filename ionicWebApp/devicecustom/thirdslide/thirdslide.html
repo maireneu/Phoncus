@@ -1,0 +1,22 @@
+<ion-grid>
+          <ion-row>
+                    <ion-col col-sm-12 col-md-12 col-lg-12>
+                              <img class="smartphone svg" src="/img/smartphone.svg"/>
+                    </ion-col>
+          </ion-row>
+          <ion-row>
+                    <ion-col col-sm-12 col-md-12 col-lg-12>
+                              <p> 설명란</p>
+                    </ion-col>
+          </ion-row>
+          <ion-row>
+                    <ion-col col-sm-12 col-md-12 col-lg-12>
+                              <ion-item class="progressbar">
+                                        <ion-range min="-200" max="200" [(ngModel)]="saturation" color="secondary">
+                                        <ion-label range-left>-200</ion-label>
+                                        <ion-label range-right>200</ion-label>
+                                        </ion-range>
+                              </ion-item>
+                    </ion-col>
+          </ion-row>
+</ion-grid>

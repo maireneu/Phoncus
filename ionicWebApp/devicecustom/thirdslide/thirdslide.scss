@@ -1,0 +1,15 @@
+third-slide{
+          //desktop
+          @media screen and (min-width:1000px){
+                    .progressbar{
+                              width:30%;
+                              margin:auto;
+                    }
+          }
+          //mobile
+          @media screen and (max-width:999px){
+                    .item-inner{
+                              border-bottom: 0 !important;
+                    }
+          }
+}

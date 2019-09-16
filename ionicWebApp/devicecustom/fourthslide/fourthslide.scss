@@ -1,0 +1,53 @@
+fourth-slide{
+          .performance-list .item-inner{
+                    border-bottom:0 !important;
+          }
+          .Slideup{
+                    animation: SlideUp ease-in;
+                    animation-duration: 1s;
+          }
+          //desktop
+          @media screen and (min-width:1000px){
+                    .performance-box{
+                              width: 80%;
+                              margin:auto;
+                              padding : 25px;
+                    }
+                    .performance-list{
+                              text-align: center;
+                              font-size: 2.3rem;
+                    }
+          }
+          //mobile
+          @media screen and (max-width:999px){
+                    .performance-box{
+                              margin:auto;
+                    }
+                    .performance-list{
+                              text-align: center;
+                    }
+          }
+          .question1{
+                    padding: 3% 0 0 0;
+                    font-size: 2.9rem;
+                    height: 30vh;
+                    border-top: 1px solid #000;
+                    border-bottom: 1px solid #000;
+          }
+          .question2{
+                    padding: 3% 0 0 0;
+                    font-size: 2.9rem;
+                    height: 30vh;
+          }
+          @keyframes SlideUp{
+                    0%{
+                              transform: translate3d(0,100%,0);
+                    }
+                    50%{
+                              transform: translate3d(0,-20%,0);
+                    }
+                    100%{
+                              transform: translate3d(0,0%,0);
+                    }
+          }
+}

@@ -1,0 +1,51 @@
+<ion-header>
+          <ion-navbar>
+                    <ion-buttons>
+                              <button ion-button>
+                    가까운 답을 골라주세요</button>
+                    </ion-buttons>
+          </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-slides class="slides" (ionSlideDidChange)="slideChanged()" >
+  <ion-slide class="slide">
+    <first-slide></first-slide>
+  </ion-slide>
+  <ion-slide class="slide">
+    <second-slide class="toggle-margin"></second-slide>
+  </ion-slide>
+  <ion-slide class="slide">
+    <third-slide></third-slide>
+  </ion-slide>
+  <ion-slide class="slide">
+    <fourth-slide></fourth-slide>
+  </ion-slide>
+  <ion-slide class="tab slide">
+    <fifth-slide></fifth-slide>
+  </ion-slide>
+  <ion-slide class="slide">
+    <sixth-slide></sixth-slide>
+  </ion-slide>
+</ion-slides>
+<!--
+    <div class="estimated-result" style="padding-top: 5px; width:100%; height:5vh">
+                <div style="width:79%; height:100%; float:left">추정가격 :</div>
+
+                <div ion-button style="width:20%; height:100%; float: right" class="next-btn">NEXT</div>
+      </div>-->
+</ion-content>
+<ion-footer class="footer-box">
+    <ion-toolbar style="height:100%">
+      <div class="contxt">추정가격 : </div>
+      <div ion-button class="next-btn" (click)="GotoNext()">NEXT</div>
+          <div class="pagenum-btn">
+      <button ion-button #value1 (click)="GotoSlide(value1);" [ngClass]="{'btn-selected' : ispage[0] , 'btn-active' : ispage[0] != checkarr[0]}" class="slide-btn" id="pagenum1">1</button>
+      <button ion-button #value2 (click)="GotoSlide(value2)" [ngClass]="{'btn-selected' : ispage[1] , 'btn-active' : ispage[1] != checkarr[1]}" class="slide-btn" id="pagenum2">2</button>
+      <button ion-button #value3 (click)="GotoSlide(value3)" [ngClass]="{'btn-selected' : ispage[2] , 'btn-active' : ispage[2] != checkarr[2]}" class="slide-btn" id="pagenum3">3</button>
+      <button ion-button #value4 (click)="GotoSlide(value4)" [ngClass]="{'btn-selected' : ispage[3] , 'btn-active' : ispage[3] != checkarr[3]}" class="slide-btn" id="pagenum4">4</button>
+      <button ion-button #value5 (click)="GotoSlide(value5)" [ngClass]="{'btn-selected' : ispage[4] , 'btn-active' : ispage[4] != checkarr[4]}" class="slide-btn" id="pagenum5">5</button>
+      <button ion-button #value6 (click)="GotoSlide(value6)" [ngClass]="{'btn-selected' : ispage[5] , 'btn-active' : ispage[5] != checkarr[5]}" class="slide-btn" id="pagenum6">6</button>
+    </div>
+    </ion-toolbar>
+  </ion-footer>

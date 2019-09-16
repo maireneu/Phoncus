@@ -1,0 +1,20 @@
+second-slide{
+          ion-grid{
+                    position:absolute;
+                    top:0;
+                    height: 100%;
+          }
+          ion-row{
+                              height:11%;
+                              align-items:center;
+           }
+          //desktop
+          @media screen and (min-width: 1000px){
+
+                    .question{
+                              font-size:2.3rem;
+                              max-width: 40%;
+                              margin:auto;
+                    }
+          }
+}

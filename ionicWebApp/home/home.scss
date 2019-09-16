@@ -1,0 +1,85 @@
+page-home {
+          body{
+                    margin : auto;
+          }
+          ion-grid{
+                    height:100%;
+          }
+          .top-block{
+                    text-align:center;
+                    margin : 300px auto;
+          }
+          .big-contxt{
+                    width:61%;
+                    margin:auto;
+                    font-size:2.3rem;
+          }
+          .middle-block{
+                    text-align: center;
+                    margin : 80px auto;
+          }
+          .start-btn{
+                    font-size:2.3rem;
+                    width:29rem;
+                    height:9.7rem;
+          }
+
+          //page 2
+          .top-block-page2{
+                    text-align: center;
+                    margin: 200px auto;
+          }
+          .big-contxt-page2{
+                    margin:auto;
+                    font-size:2.3rem;
+          }
+          .device-choice{
+                    width:23%;
+          }
+          .choice-list{
+                    width:100%;
+                    cursor: pointer;
+          }
+          .manufacturer-base{
+                    font-size:2.3rem;
+                    text-align: center;
+                    border:1px solid #000;
+                    height:6vh;
+          }
+          .petname-base{
+                    font-size:2.3rem;
+                    text-align: center;
+                    border:1px solid #000;
+                    height:6vh;
+          }
+          .next-btn{
+                    font-size:2.3rem;
+                    width:29rem;
+                    height:9.7rem;
+          }
+
+          //mobile
+          @media screen and (max-width:990px){
+                    
+                    .top-block{
+                              text-align:center;
+                              margin : 9vh auto;
+                    }
+                    .middle-block{
+                              text-align: center;
+                              margin : 9vh auto;
+                    }
+                    .small-contxt{
+                              font-size:0.9em;
+                    }
+
+                    //mobile-page2
+                    .top-block-page2{
+                              text-align:center;
+                              margin : 9vh auto;
+                    }
+                    .device-choice{
+                              width: 65%;
+                    }
+          }
+}

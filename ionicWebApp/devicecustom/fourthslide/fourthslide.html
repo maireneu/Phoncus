@@ -1,0 +1,35 @@
+<ion-grid>
+          <ion-row>
+                    
+                              <ion-list radio-group class="performance-box" [(ngModel)]="performance">
+                    <ion-col col-xs-12 col-sm-12 col-md-12 col-lg-12>
+                              <ion-item class="performance-list">
+                              <ion-label >프리미엄급 최신폰을 원합니다</ion-label>
+                              <ion-radio value="premium" (click)="efficiencyhide()" item-left></ion-radio>
+                              </ion-item>
+                    </ion-col>
+                    <ion-col col-xs-12 col-sm-12 col-md-12 col-lg-12>
+                              <ion-item class="performance-list">
+                              <ion-label>가성비를 따져봅시다</ion-label>
+                              <ion-radio value="efficiency" (click)="efficiencyshow()" item-left></ion-radio>
+                              </ion-item>
+                    </ion-col>
+                              </ion-list>
+          </ion-row>
+          <ion-row [ngClass]="{'Slideup' : efficiencyhidden == false}" [hidden]="efficiencyhidden">
+                    <ion-col class="question1" col-xs-12 col-sm-12 col-md-12 col-lg-12 >
+                              주로 스마트폰으로 무엇을 하나요?
+                    </ion-col>
+          </ion-row>
+          <ion-row [ngClass]="{'Slideup' : efficiencyhidden == false}" [hidden]="efficiencyhidden">
+                    <ion-col class="question2" col-xs-12 col-sm-12 col-md-12 col-lg-12>
+                                스마트폰이 어느정도 성능이길 바라요?
+                              <ion-item>
+                                        <ion-range min="-200" max="200" [(ngModel)]="test" color="secondary">
+                                                  <ion-label range-left>-200</ion-label>
+                                                  <ion-label range-right>200</ion-label>
+                                        </ion-range>
+                              </ion-item>
+                    </ion-col>
+          </ion-row>
+</ion-grid>

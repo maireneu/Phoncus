@@ -1,0 +1,22 @@
+<div class="tab-wrap">
+          <div class="tab-left" (click)="pixelshow()">화질</div>
+          <div class="tab-right" (click)="camerashow()">카메라</div>
+</div>
+<ion-grid>
+          <ion-row >
+                    <ion-col class="img-box" col-sm-12 col-md-12 col-lg-12>
+                             <ion-img class="pixel-img" src="#" [hidden]="pixelhidden"></ion-img>
+                             <ion-img class="camera-img" src="#" [hidden]="camerahidden"></ion-img>
+                    </ion-col>
+          </ion-row>
+          <ion-row class="range-box" >
+                    <ion-col col-sm-12 col-md-12 col-lg-12>
+                              <ion-item>
+                                        <ion-range min="-200" max="200" [(ngModel)]="test" color="secondary">
+                                                  <ion-label range-left>-200</ion-label>
+                                                  <ion-label range-right>200</ion-label>
+                                        </ion-range>
+                              </ion-item>
+                    </ion-col>
+          </ion-row>
+</ion-grid>

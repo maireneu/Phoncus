@@ -1,0 +1,46 @@
+sixth-slide{
+          .gender-contents{
+                    height:28vh;
+          }
+          .date-contents{
+                    font-size: 2rem ;
+                    height:29vh;
+                    align-items: center;
+          }
+          .middlecontxt{
+                    font-size: 1.9rem;
+          }
+          .bigcontxt{
+                    font-size : 2.3rem;
+          }
+          .gender{  
+                    display:flex;
+                    width:100%;
+          }
+          .child-gender{
+                    width: 33%;
+          }
+          .item-inner{
+                    border: 0 !important;
+          }
+          .list-ios > .item-block:first-child , .list-ios > .item-block:last-child{
+                    border: 0 !important;
+          }
+          .date-form{
+                    display:inherit;
+          }
+          .date{
+                    display:inline;
+          }
+          .datetime-text{
+                    display:inline;
+                    border-bottom: 0.55px solid #c8c7cc;
+          }
+          //mobile
+          @media screen and (max-width: 999px){
+                              
+                    .question{
+                              text-align : left;
+                    }
+          }
+}

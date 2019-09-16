@@ -1,0 +1,56 @@
+device-custom {
+          
+          .tab .slide-zoom{
+                    position:absolute;
+                    top:0;
+                    height:100%;
+          }
+          .estimated-result{
+                    position:fixed;
+                    bottom:1%;
+          }
+          .footer-box{
+                    position:fixed;
+                    z-index:0;
+                    height:9vh;
+          }
+          .btn-selected{
+                    background: #2e3f20;
+          }
+          .btn-active{
+                    background: gray;
+          }
+          .next-btn{
+                    position: absolute;
+                    float:right;
+                    cursor:pointer;
+                    top:2%;
+                    right:3%;
+                    width: 12%;
+                    height: 90%;
+          }
+          .contxt{
+                    position:absolute;
+                    float: left;
+                    top:14%;
+          }
+          .pagenum-btn{
+                    position:absolute; 
+                    bottom:5px; 
+                    cursor:pointer;
+          }
+          @media screen and (max-width:999px){
+                    .footer-box{
+                              position:fixed;
+                              z-index:0;
+                              height:13vh;
+                    }
+                    .slide-btn{
+                              height:2.3em;
+                              width:13%;
+                    }
+                    .next-btn{
+                              width:16%;
+                    }
+          }
+}

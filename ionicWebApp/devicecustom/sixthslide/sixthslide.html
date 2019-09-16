@@ -1,0 +1,40 @@
+<ion-grid>
+          <ion-row>
+                    <ion-col class="middlecontxt question" col-sm-12 col-md-12 col-lg-12>
+                    성별이 어떻게 되십니까?
+                    </ion-col>
+          </ion-row>
+          <ion-row class="gender-contents">
+                    <ion-list radio-group class="gender" [(ngModel)]="gender">
+                                        <ion-item class=" bigcontxt child-gender">
+                                                  <ion-label>남성</ion-label>
+                                                  <ion-radio value="male"></ion-radio>
+                                        </ion-item>
+                                        <ion-item class=" bigcontxt child-gender">
+                                                  <ion-label>여성</ion-label>
+                                                  <ion-radio value="female"></ion-radio>
+                                        </ion-item>
+                                        <ion-item class=" bigcontxt child-gender">
+                                                  <ion-label>그 외</ion-label>
+                                                  <ion-radio value="anothergender"></ion-radio>
+                                        </ion-item>
+                    </ion-list>
+          </ion-row>
+          <ion-row>
+                    <ion-col class="middlecontxt question" col-sm-12 col-md-12 col-lg-12>
+                              언제 태어나셨나요?
+                    </ion-col>
+          </ion-row>
+          <ion-row class="date-contents">
+                    <ion-col class="dateform" offset-xs-3 offset-sm-3 offset-md-3 offset-lg-3 col-xs-2 col-sm-2 col-md-2 col-lg-2>
+                              <ion-datetime class="date" displayFormat="YYYY" pickerFormat="YYYY" [(ngModel)]="myYear"></ion-datetime>
+                              년
+                    </ion-col>
+                    <ion-col class="dateform" col-xs-3 col-sm-3 col-md-3 col-lg-3>
+                              <ion-datetime class="date" displayFormat="MM" [(ngModel)]="myMonth"></ion-datetime>
+                              월
+                    </ion-col>
+                    <ion-col class="empty" col-xs-5 col-sm-5 col-md-5 col-lg-5>
+                    </ion-col>
+          </ion-row>
+</ion-grid>
