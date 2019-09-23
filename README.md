@@ -1,6 +1,6 @@
 # Game 폴더는 Unity로 연습으로 만든 게임이 삽입되어 있습니다.
 Glitch Garden, Block Breaker등의 게임을 강의를 보면서 만들고, 튜닝하고, 유니티 사용법을 익혔습니다.
-게임은 https://drive.google.com/drive/folders/1mpMwBQPAgkblBjYtx-cJbG7JrarCFQ3-?usp=sharing 에서 다운로드 가능합니다.
+게임은 https://drive.google.com/drive/folders/1mpMwBQPAgkblBjYtx-cJbG7JrarCFQ3-?usp=sharing 에서도 다운로드 가능합니다.
 
 # Phoncus 그외 폴더
 AndroidApp은 창업 최초로 서비스의 MVP를 구현하고자 만든 안드로이드 앱의 소스코드입니다.
