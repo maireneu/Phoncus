@@ -30,4 +30,8 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\basic.frag" />
+    <None Include="bin\basic.vert" />
+  </ItemGroup>
 </Project>

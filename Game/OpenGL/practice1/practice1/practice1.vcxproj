@@ -29,6 +29,10 @@
   <ItemGroup>
     <ClInclude Include="src\ShaderProgram.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\basic.frag" />
+    <None Include="bin\basic.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{1C0A860A-D56A-4F32-90C6-540ECB847A70}</ProjectGuid>

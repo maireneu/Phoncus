@@ -33,19 +33,15 @@ bool ShaderProgram::loadShaders(const char* vsFilename, const char* fsFilename) 
 	checkCompileErrors(vs, VERTEX);
 
 	glCompileShader(fs);
-	checkCompileErrors(fs, VERTEX);
+	checkCompileErrors(fs, FRAGMENT);
 
 	//gen shaderprogram
-	GLuint sp = glCreateProgram();
-	glAttachShader(sp, vs);
-	glAttachShader(sp, fs);
-	glLinkProgram(sp);
+	mHandle = glCreateProgram();
+	glAttachShader(mHandle, vs);
+	glAttachShader(mHandle, fs);
+	glLinkProgram(mHandle);
 
-	glGetProgramiv(sp, GL_LINK_STATUS, &result);
-	if (!result) {
-		glGetProgramInfoLog(sp, sizeof(infoLog), NULL, infoLog);
-		std::cout << "Error! Shader Program linker failure. " << infoLog << std::endl;
-	}
+	checkCompileErrors(mHandle, PROGRAM);
 
 	glDeleteShader(vs);
 	glDeleteShader(fs);
@@ -75,6 +71,27 @@ std::string ShaderProgram::fileToString(const std::string& filename) {
 
 	return ss.str();
 }
-void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type) {
 
+void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type) {
+	int status = 0;
+	if (type == PROGRAM) {
+		glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
+		if (status == GL_FALSE) {
+			GLint length = 0;
+			glGetProgramiv(mHandle,GL_INFO_LOG_LENGTH, &length);
+			std::string errorLog(length, ' ');
+			glGetProgramInfoLog(mHandle, length, &length, &errorLog[0]);
+			std::cerr << "Error! Program failed to link." << errorLog << std::endl;
+		}
+	}
+	else { //VERTEX or FRAGMENT
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+		if (status == GL_FALSE) {
+			GLint length = 0;
+			glGetShaderiv(mHandle, GL_INFO_LOG_LENGTH, &length);
+			std::string errorLog(length, ' ');
+			glGetShaderInfoLog(mHandle, length, &length, &errorLog[0]);
+			std::cerr << "Error! Shader failed to compile." << errorLog << std::endl;
+		}
+	}
 };

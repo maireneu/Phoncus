@@ -6,6 +6,8 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
+#include "ShaderProgram.h"
+
 const char* APP_TITLE = "Hello, Modern OpenGL";
 const int gWindowWidth = 800;
 const int gWindowHeight = 600;
@@ -19,27 +21,11 @@ struct DestroyglfwWin {
 
 auto gWindow = std::unique_ptr<GLFWwindow, DestroyglfwWin>();
 
-const GLchar* vertexShaderSrc =
-"#version 330 core\n"
-"layout (location = 0) in vec3 pos;"
-"void main(){"
-"	gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);"
-"}";
-
-const GLchar* fragmentShaderSrc =
-"#version 330 core\n"
-"out vec4 frag_color;"
-"void main(){"
-"	frag_color = vec4(0.1f, 0.1f, 0.7f, 1.0f);"
-"}";
-
 bool gFullscreen = false;
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
 void showFPS(GLFWwindow* window);
 bool initOpenGL();
-
-
 
 int main()
 {
@@ -78,7 +64,8 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	
+	ShaderProgram shaderProgram;
+	shaderProgram.loadShaders("basic.vert", "basic.frag");
 
 	// Main loop
 	while (!glfwWindowShouldClose(gWindow.get())) {
@@ -86,7 +73,8 @@ int main()
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(sp);
+		shaderProgram.use();
+
 		glBindVertexArray(vao);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
@@ -94,7 +82,6 @@ int main()
 		glfwSwapBuffers(gWindow.get());
 	}
 
-	glDeleteProgram(sp);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 	glDeleteBuffers(1, &ibo);
