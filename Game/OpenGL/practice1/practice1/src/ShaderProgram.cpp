@@ -18,9 +18,6 @@ bool ShaderProgram::loadShaders(const char* vsFilename, const char* fsFilename) 
 	std::string fsString = fileToString(fsFilename);
 	const GLchar* vsSourcePtr = vsString.c_str();
 	const GLchar* fsSourcePtr = fsString.c_str();
-	//auto vsSourcePtr = std::unique_ptr<const GLchar>(vsString.c_str());
-	//auto fsSourcePtr = std::unique_ptr<const GLchar>(fsString.c_str());
-
 
 	//gen shader
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -45,6 +42,8 @@ bool ShaderProgram::loadShaders(const char* vsFilename, const char* fsFilename) 
 
 	glDeleteShader(vs);
 	glDeleteShader(fs);
+
+	mUniformLocation.clear();
 
 	return true;
 }
@@ -95,3 +94,26 @@ void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type) {
 		}
 	}
 };
+
+GLint ShaderProgram::getUniformLocation(const GLchar* name) {
+	std::map<std::string, GLint>:: iterator it = mUniformLocation.find(name);
+
+	if (it == mUniformLocation.end()) {
+		mUniformLocation[name] = glGetUniformLocation(mHandle, name);
+	}
+
+	return mUniformLocation[name];
+}
+
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec2& v) {
+	GLint loc = getUniformLocation(name);
+	glUniform2f(loc, v.x,v.y);
+}
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec3& v) {
+	GLint loc = getUniformLocation(name);
+	glUniform3f(loc, v.x, v.y, v.z);
+}
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec4& v) {
+	GLint loc = getUniformLocation(name);
+	glUniform4f(loc, v.x, v.y, v.z, v.w);
+}
