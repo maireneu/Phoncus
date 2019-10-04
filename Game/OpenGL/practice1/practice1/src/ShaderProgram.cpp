@@ -31,13 +31,16 @@ bool ShaderProgram::loadShaders(const char* vsFilename, const char* fsFilename) 
 
 	glCompileShader(fs);
 	checkCompileErrors(fs, FRAGMENT);
-
 	//gen shaderprogram
 	mHandle = glCreateProgram();
+	if (mHandle == 0){
+		std::cerr << "Unable to create shader program!" << std::endl;
+		return false;
+	}
 	glAttachShader(mHandle, vs);
 	glAttachShader(mHandle, fs);
-	glLinkProgram(mHandle);
 
+	glLinkProgram(mHandle);
 	checkCompileErrors(mHandle, PROGRAM);
 
 	glDeleteShader(vs);
@@ -103,6 +106,10 @@ GLint ShaderProgram::getUniformLocation(const GLchar* name) {
 	}
 
 	return mUniformLocation[name];
+}
+
+GLuint ShaderProgram::GetProgram()const {
+	return mHandle;
 }
 
 void ShaderProgram::setUniform(const GLchar* name, const glm::vec2& v) {

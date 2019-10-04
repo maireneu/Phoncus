@@ -1,6 +1,7 @@
 #ifndef TEXTURE2D_H
 #define TEXTURE2D_H
 
+#define GLEW_STATIC
 #include "GL/glew.h"
 #include <string>
 
@@ -14,7 +15,8 @@ public:
 	void bind(GLuint texUnit = 0);
 
 private:
-
+	Texture2D(const Texture2D& rhs) {}
+	Texture2D& operator = (const Texture2D& rhs) {}
 	GLuint mTexture;
 
 };

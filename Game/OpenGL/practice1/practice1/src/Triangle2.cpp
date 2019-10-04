@@ -1,12 +1,15 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <string>
 
 #define GLEW_STATIC
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
 
 #include "ShaderProgram.h"
+#include "Texture2D.h"
 
 const char* APP_TITLE = "Hello, Modern OpenGL";
 const int gWindowWidth = 800;
@@ -22,8 +25,11 @@ struct DestroyglfwWin {
 auto gWindow = std::unique_ptr<GLFWwindow, DestroyglfwWin>();
 
 bool gFullscreen = false;
+const std::string texture1Filename = "./textures/airplane.PNG";
+const std::string texture2Filename = "textures/crate.jpg";
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
+void glfw_onFramebufferSize(GLFWwindow* window, int width, int height);
 void showFPS(GLFWwindow* window);
 bool initOpenGL();
 
@@ -36,10 +42,11 @@ int main()
 	}
 
 	GLfloat vert_pos[] = {
-		-0.5f,  0.5f,  0.0f,
-		 0.5f,  0.5f,  0.0f,
-		 0.5f, -0.5f,  0.0f,
-		-0.5f, -0.5f,  0.0f
+		// position			// tex coords
+		-0.5f,  0.5f,  0.0f, 0.0f, 1.0f, // top left
+		 0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
+		 0.5f, -0.5f,  0.0f, 1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f,  0.0f, 0.0f, 0.0f  // bottom left
 	};
 
 	GLuint indices[] = {
@@ -57,8 +64,13 @@ int main()
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vert_pos), vert_pos, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(0));
 	glEnableVertexAttribArray(0);
+
+	 
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -67,21 +79,34 @@ int main()
 	ShaderProgram shaderProgram;
 	shaderProgram.loadShaders("basic.vert", "basic.frag");
 
+	Texture2D texture1;
+	texture1.loadTexture(texture1Filename, true);
+
+	Texture2D texture2;
+	texture2.loadTexture(texture2Filename, 2);
+
 	// Main loop
 	while (!glfwWindowShouldClose(gWindow.get())) {
 		showFPS(gWindow.get());
 		glfwPollEvents();
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		texture1.bind(0);
+		texture2.bind(1);
+
 		shaderProgram.use();
 
-		GLfloat time = glfwGetTime();
-		GLfloat Color = (sin(time) / 2) + 0.5;
-		glm::vec2 pos;
-		pos.x = sin(time) / 2;
-		pos.y = cos(time) / 2;
-		shaderProgram.setUniform("posOffset", pos);
-		shaderProgram.setUniform("vertColor", glm::vec4(Color, Color, Color, 1.0f));
+		glUniform1i(glGetUniformLocation(shaderProgram.GetProgram(), "myTexture1"), 0);
+		glUniform1i(glGetUniformLocation(shaderProgram.GetProgram(), "myTexture2"), 1);
+
+
+		//GLfloat time = glfwGetTime();
+		//GLfloat Color = (sin(time) / 2) + 0.5;
+		//glm::vec2 pos;
+		//pos.x = sin(time) / 2;
+		//pos.y = cos(time) / 2;
+		//shaderProgram.setUniform("posOffset", pos);
+		//shaderProgram.setUniform("vertColor", glm::vec4(Color, Color, Color, 1.0f));
 
 
 		glBindVertexArray(vao);
