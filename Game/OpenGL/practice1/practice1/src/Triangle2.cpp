@@ -12,8 +12,8 @@
 #include "Texture2D.h"
 
 const char* APP_TITLE = "Hello, Modern OpenGL";
-const int gWindowWidth = 800;
-const int gWindowHeight = 600;
+int gWindowWidth = 1024;
+int gWindowHeight = 768;
 bool gWireframe = false;
 //GLFWwindow* gWindow = nullptr;
 struct DestroyglfwWin {
@@ -25,11 +25,11 @@ struct DestroyglfwWin {
 auto gWindow = std::unique_ptr<GLFWwindow, DestroyglfwWin>();
 
 bool gFullscreen = false;
-const std::string texture1Filename = "./textures/airplane.PNG";
+const std::string texture1Filename = "textures/airplane.PNG";
 const std::string texture2Filename = "textures/crate.jpg";
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
-void glfw_onFramebufferSize(GLFWwindow* window, int width, int height);
+void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height);
 void showFPS(GLFWwindow* window);
 bool initOpenGL();
 
@@ -166,6 +166,7 @@ bool initOpenGL() {
 	}
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glViewport(0, 0, gWindowWidth, gWindowHeight);
 	return true;
 
 }
@@ -182,6 +183,12 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
+}
+
+void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height) {
+	gWindowWidth = width;
+	gWindowHeight = height;
+	glViewport(0, 0, gWindowWidth, gWindowHeight);
 }
 
 void showFPS(GLFWwindow* window) {
