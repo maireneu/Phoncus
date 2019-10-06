@@ -7,9 +7,9 @@ Camera::Camera() :
 	mPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
 	mTargetPos(glm::vec3(0.0f, 0.0f, 0.0f)),
 	mUp(0.0f, 1.0f, 0.0f),
-	mYaw(0.0f),
-	mPitch(glm::pi<float>()),
-	mRight(0.0f, 0.0f, 0.0f), 
+	mYaw(glm::pi<float>()),
+	mPitch(0.0f),
+	mRight(1.0f, 0.0f, 0.0f), 
 	WORLD_UP(0.0f, 1.0f, 0.0f),
 	mFOV(DEF_FOV) {
 }
@@ -31,6 +31,11 @@ const glm::vec3& Camera::getRight() const
 const glm::vec3& Camera::getUp() const
 {
 	return mUp;
+}
+
+const glm::vec3& Camera::getPosition() const
+{
+	return mPosition;
 }
 
 FPSCamera::FPSCamera(glm::vec3 position, float yaw, float pitch)
@@ -70,10 +75,10 @@ void FPSCamera::rotate(float yaw, float pitch)
 
 	mPitch = glm::clamp(mPitch, -glm::pi<float>() / 2.0f + 0.1f, glm::pi<float>() / 2.0f - 0.1f);
 
-	if (mYaw > glm::two_pi<float>())
-		mYaw -= glm::two_pi<float>();
-	else if (mYaw < 0.0)
-		mYaw += glm::two_pi<float>();
+	//if (mYaw > glm::two_pi<float>())
+	//	mYaw -= glm::two_pi<float>();
+	//else if (mYaw < 0.0)
+	//	mYaw += glm::two_pi<float>();
 
 
 	//std::cout << glm::degrees(mPitch) << " " << glm::degrees(mYaw) << std::endl;

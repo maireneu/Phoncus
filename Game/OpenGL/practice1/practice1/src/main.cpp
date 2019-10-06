@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sstream>
-#include <memory>
 #include <string>
 
 #define GLEW_STATIC
@@ -12,12 +11,15 @@
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 const char* APP_TITLE = "Hello, Modern OpenGL";
-int gWindowWidth = 1024;
-int gWindowHeight = 768;
+int gWindowWidth = 1280;
+int gWindowHeight = 960;
 bool gWireframe = false;
-//GLFWwindow* gWindow = nullptr;
+bool gFlashlightOn = true;
+glm::vec4 gClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
 struct DestroyglfwWin {
 	void operator()(GLFWwindow* ptr) {
 		glfwDestroyWindow(ptr);
@@ -27,8 +29,8 @@ struct DestroyglfwWin {
 auto gWindow = std::unique_ptr<GLFWwindow, DestroyglfwWin>();
 
 bool gFullscreen = false;
-const std::string texture1Filename = "textures/airplane.PNG";
-const std::string texture2Filename = "textures/grid.jpg";
+//const std::string texture1Filename = "textures/airplane.PNG";
+//const std::string texture2Filename = "textures/grid.jpg";
 
 
 //OrbitCamera orbitCamera;
@@ -37,7 +39,7 @@ const std::string texture2Filename = "textures/grid.jpg";
 //float gPitch = 0.0f;
 //float gRadius = 10.0f;
 
-FPSCamera fpsCamera(glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(-1.0, -1.0, -1.0));
+FPSCamera fpsCamera(glm::vec3(0.0f, 3.0f, 10.0f));// , glm::vec3(-1.0, -1.0, -1.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 10.0;
 const float MOUSE_SENSITIVITY = 0.25f;
@@ -58,87 +60,67 @@ int main()
 		return -1;
 	}
 
-	GLfloat vert_pos[] = {
-		// 앞
-		-1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f, 1.0f,
-		-1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f,  1.0f, 0.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
+	ShaderProgram lightingShader;
+	lightingShader.loadShaders("lighting.vert", "lighting.frag");
 
-		 // 뒤
-		-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
-		 1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
-		 1.0f,  1.0f, -1.0f, 1.0f, 1.0f,
-		-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
-		 1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
-
-		  // 왼
-		-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
-		-1.0f,  1.0f,  1.0f, 1.0f, 1.0f,
-		-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
-		-1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
-
-		  // 오른
-		 1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
-		 1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
-		 1.0f,  1.0f, -1.0f, 1.0f, 1.0f,
-		 1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
-		 1.0f, -1.0f,  1.0f, 0.0f, 0.0f,
-		 1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
-
-		   // 위
-		-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f, 0.0f,
-		 1.0f,  1.0f, -1.0f, 1.0f, 1.0f,
-		-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
-		-1.0f,  1.0f,  1.0f, 0.0f, 0.0f,
-		 1.0f,  1.0f,  1.0f, 1.0f, 0.0f,
-
-		   // 아래
-		-1.0f, -1.0f,  1.0f, 0.0f, 1.0f,
-		 1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
-		 1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f,  1.0f, 0.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
-		 1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+	// model 위치
+	glm::vec3 modelPos[] = {
+		glm::vec3(-3.5f, 0.0f, 0.0f),	// barrel
+		glm::vec3(4.0f, 1.0f, 0.0f),	// woodcrate
+		glm::vec3(0.0f, 0.0f, -3.0f),	// robot
+		glm::vec3(0.0f, 0.0f, 0.0f),	// floor
+		glm::vec3(0.0f, 0.0f, 3.0f),	// pin
+		glm::vec3(-2.0f, 0.0f, 2.0f),	// bunny
+		glm::vec3(-5.5f, 0.0f, 0.0f),	// lamp post 1
+		glm::vec3(0.0f, 0.0f, 0.0f),	// lamp post 2
+		glm::vec3(5.5f, 0.0f, 0.0f),	// lamp post 2
 	};
 
-	glm::vec3 cubePos = glm::vec3(0.0f, 0.0f, -5.0f);
-	glm::vec3 floorPos = glm::vec3(0.0f, -1.0f, 0.0f);
+	// model scale
+	glm::vec3 modelScale[] = {
+		glm::vec3(1.0f, 1.0f, 1.0f),	// barrel
+		glm::vec3(1.0f, 1.0f, 1.0f),	// woodcrate
+		glm::vec3(1.0f, 1.0f, 1.0f),	// robot
+		glm::vec3(10.0f, 1.0f, 10.0f),	// floor
+		glm::vec3(0.1f, 0.0f, 0.1f),	// pin
+		glm::vec3(0.7f, 0.7f, 0.7f),	// bunny
+		glm::vec3(1.0f, 1.0f, 1.0f),	// lamp post 1
+		glm::vec3(1.0f, 1.0f, 1.0f),	// lamp post 2
+		glm::vec3(1.0f, 1.0f, 1.0f),	// lamp post 3
+	};
 
-	GLuint vbo, vao;
+	//light 위치
+	glm::vec3 pointLightPos[3] = {
+		glm::vec3(-5.0f, 3.8f, 0.0f),
+		glm::vec3(0.5f,  3.8f, 0.0f),
+		glm::vec3(5.0f,  3.8,  0.0f)
+	};
 
-	//gen vertexarray
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	// Mesh, texture 로드
+	const int numModels = 9;
+	Mesh mesh[numModels];
+	Texture2D texture[numModels];
 
-	//gen position buffer
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vert_pos), vert_pos, GL_STATIC_DRAW);
+	mesh[0].loadOBJ("models/barrel.obj");
+	mesh[1].loadOBJ("models/woodcrate.obj");
+	mesh[2].loadOBJ("models/robot.obj");
+	mesh[3].loadOBJ("models/floor.obj");
+	mesh[4].loadOBJ("models/bowling_pin.obj");
+	mesh[5].loadOBJ("models/bunny.obj");
+	mesh[6].loadOBJ("models/lampPost.obj");
+	mesh[7].loadOBJ("models/lampPost.obj");
+	mesh[8].loadOBJ("models/lampPost.obj");
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(0));
-	glEnableVertexAttribArray(0);
+	texture[0].loadTexture("textures/barrel_diffuse.png", true);
+	texture[1].loadTexture("textures/woodcrate_diffuse.jpg", true);
+	texture[2].loadTexture("textures/robot_diffuse.jpg", true);
+	texture[3].loadTexture("textures/tile_floor.jpg", true);
+	texture[4].loadTexture("textures/AMF.tga", true);
+	texture[5].loadTexture("textures/bunny_diffuse.jpg", true);
+	texture[6].loadTexture("textures/lamp_post_diffuse.png", true);
+	texture[7].loadTexture("textures/lamp_post_diffuse.png", true);
+	texture[8].loadTexture("textures/lamp_post_diffuse.png", true);
 
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	ShaderProgram shaderProgram;
-	shaderProgram.loadShaders("basic.vert", "basic.frag");
-
-	Texture2D texture1;
-	texture1.loadTexture(texture1Filename, true);
-
-	Texture2D texture2;
-	texture2.loadTexture(texture2Filename, true);
-
-	//float cubeAngle = 0.0f;
 	double lastTime = glfwGetTime();
 
 	// Main loop
@@ -149,54 +131,129 @@ int main()
 
 		glfwPollEvents();
 		update(deltaTime);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		texture1.bind(0);
-
-		//glm::mat4 model(1.0), view(1.0), projection(1.0);
-		glm::mat4 model, view, projection;
-
-		/*orbitCamera.setLookAt(cubePos);
-		orbitCamera.rotate(gYaw, gPitch);
-		orbitCamera.setRadius(gRadius);*/
-
-		model = glm::translate(model, cubePos);
-		//view = orbitCamera.getViewMatrix();
+		glm::mat4 model(1.0), view(1.0), projection(1.0);
 		view = fpsCamera.getViewMatrix();
 
 
 		/*projection = glm::perspective(glm::radians(60.0f), (float)gWindowWidth /
 			(float)gWindowHeight, 0.1f, 100.0f);*/
 		projection = glm::perspective(glm::radians(fpsCamera.getFOV()), 
-			(float)gWindowWidth / (float)gWindowHeight, 0.1f, 100.0f);
+			(float)gWindowWidth / (float)gWindowHeight, 0.1f, 200.0f);
 
-		shaderProgram.use();
+		glm::vec3 viewPos;
+		viewPos.x = fpsCamera.getPosition().x;
+		viewPos.y = fpsCamera.getPosition().y;
+		viewPos.z = fpsCamera.getPosition().z;
 
-		shaderProgram.setUniform("model", model);
-		shaderProgram.setUniform("view", view);
-		shaderProgram.setUniform("projection", projection);
+		//glm::vec3 lightPos(0.0f, 1.0f, 10.0f);
+		//glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//angle += (float)deltaTime * 50.0f;
+		//lightPos.x = 8.0f * sinf(glm::radians(angle));
+
+		lightingShader.use();
+		lightingShader.setUniform("model", glm::mat4(1.0));
+		lightingShader.setUniform("view", view);
+		lightingShader.setUniform("projection", projection);
+		lightingShader.setUniform("viewPos", viewPos);
+
+		lightingShader.setUniform("sunLight.direction", glm::vec3(0.0f, -0.9f, -0.17f));
+		lightingShader.setUniform("sunLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+		lightingShader.setUniform("sunLight.diffuse", glm::vec3(0.1f, 0.1f, 0.1f));
+		lightingShader.setUniform("sunLight.specular", glm::vec3(0.1f, 0.1f, 0.1f));
+
+		lightingShader.setUniform("pointLights[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		lightingShader.setUniform("pointLights[0].diffuse", glm::vec3(0.0f, 1.0f, 0.1f));
+		lightingShader.setUniform("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		lightingShader.setUniform("pointLights[0].position", pointLightPos[0]);
+		lightingShader.setUniform("pointLights[0].constant", 1.0f);
+		lightingShader.setUniform("pointLights[0].linear", 0.22f);
+		lightingShader.setUniform("pointLights[0].exponent", 0.20f);
+
+		lightingShader.setUniform("pointLights[1].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		lightingShader.setUniform("pointLights[1].diffuse", glm::vec3(1.0f, 0.1f, 0.0f));
+		lightingShader.setUniform("pointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		lightingShader.setUniform("pointLights[1].position", pointLightPos[1]);
+		lightingShader.setUniform("pointLights[1].constant", 1.0f);
+		lightingShader.setUniform("pointLights[1].linear", 0.22f);
+		lightingShader.setUniform("pointLights[1].exponent", 0.20f);
+
+		lightingShader.setUniform("pointLights[2].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		lightingShader.setUniform("pointLights[2].diffuse", glm::vec3(0.0f, 0.1f, 1.0f));
+		lightingShader.setUniform("pointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		lightingShader.setUniform("pointLights[2].position", pointLightPos[2]);
+		lightingShader.setUniform("pointLights[2].constant", 1.0f);
+		lightingShader.setUniform("pointLights[2].linear", 0.22f);
+		lightingShader.setUniform("pointLights[2].exponent", 0.20f);
+
+		glm::vec3 spotlightPos = fpsCamera.getPosition();
+		spotlightPos.y -= 0.5f;
+
+		lightingShader.setUniform("spotLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+		lightingShader.setUniform("spotLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+		lightingShader.setUniform("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		lightingShader.setUniform("spotLight.position", spotlightPos);
+		lightingShader.setUniform("spotLight.direction", fpsCamera.getLook());
+		lightingShader.setUniform("spotLight.cosInnerCone", glm::cos(glm::radians(15.0f)));
+		lightingShader.setUniform("spotLight.cosOuterCone", glm::cos(glm::radians(20.0f)));
+		lightingShader.setUniform("spotLight.constant", 1.0f);
+		lightingShader.setUniform("spotLight.linear", 0.07f);
+		lightingShader.setUniform("spotLight.exponent", 0.017f);
+		lightingShader.setUniform("spotLight.on", gFlashlightOn);
+
+		//lightingProgram.use();
+		//lightingProgram.setUniform("model", model);
+		//lightingProgram.setUniform("view", view);
+		//lightingProgram.setUniform("projection", projection);
+
+		for (int i = 0; i < numModels; i++) {
+			model = glm::translate(glm::mat4(1.0), modelPos[i]) * 
+				glm::scale(glm::mat4(1.0), modelScale[i]);
+			lightingShader.setUniform("model", model);
+
+			lightingShader.setUniform("material.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+			lightingShader.setUniformSampler("material.diffuseMap", 0);
+			lightingShader.setUniform("material.specular", glm::vec3(0.8f, 0.8f, 0.8f));
+			lightingShader.setUniform("material.shininess", 32.0f);
+
+			texture[i].bind(0);
+			mesh[i].draw();
+			texture[i].unbind(0);
+		}
+
+		//render the light
+		//model = glm::translate(glm::mat4(), lightPos);
+		//lightShader.use();
+		//lightShader.setUniform("lightColor", lightColor);
+		//lightShader.setUniform("model", model);
+		//lightShader.setUniform("view", view);
+		//lightShader.setUniform("projection", projection);
+		//lightMesh.draw();
+
+		////glBindVertexArray(vao);
+		////glDrawArrays(GL_TRIANGLES, 0, 36);
 		
 
-		texture2.bind(0);
+		////texture2.bind(0);
 		/*glm::vec3 floorPos;
 		floorPos.y = -1.0f;*/
-		model = glm::translate(model, floorPos) * glm::scale(model, 
-			glm::vec3(10.0f, 0.01f, 10.0f));
+		////model = glm::translate(model, floorPos) * glm::scale(model, 
+		////	glm::vec3(10.0f, 0.01f, 10.0f));
 
 
-		shaderProgram.setUniform("model", model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+		//shaderProgram.setUniform("model", model);
+		////glDrawArrays(GL_TRIANGLES, 0, 36);
+		////glBindVertexArray(0);
 
 		glfwSwapBuffers(gWindow.get());
 		lastTime = currentTime;
 	}
 
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
+	////glDeleteVertexArrays(1, &vao);
+	////glDeleteBuffers(1, &vbo);
 
 	glfwTerminate();
 
@@ -250,7 +307,8 @@ bool initOpenGL() {
 		return false;
 	}
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(gClearColor.r, gClearColor.g, gClearColor.b, gClearColor.a);
 	glViewport(0, 0, gWindowWidth, gWindowHeight);
 	glEnable(GL_DEPTH_TEST);
 	return true;
@@ -267,6 +325,11 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		else
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if (key == GLFW_KEY_E && action == GLFW_PRESS)
+	{
+		// toggle the flashlight
+		gFlashlightOn = !gFlashlightOn;
 	}
 
 }
@@ -324,9 +387,11 @@ void update(double elapsedTime)
 		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getRight());
 
 	if (glfwGetKey(gWindow.get(), GLFW_KEY_Z) == GLFW_PRESS)
-		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getUp());
+		//fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getUp());
+		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * glm::vec3(0.0f, 1.0f, 0.0f));
 	else if (glfwGetKey(gWindow.get(), GLFW_KEY_X) == GLFW_PRESS)
-		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -fpsCamera.getUp());
+		//fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -fpsCamera.getUp());
+		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void showFPS(GLFWwindow* window) {
@@ -334,11 +399,10 @@ void showFPS(GLFWwindow* window) {
 	static double previousSeconds = 0.0;
 	static int frameCount = 0;
 	double elapsedSeconds;
-	// returns number of seconds since GLFW started, as a double
 	double currentSeconds = glfwGetTime();
 
 	elapsedSeconds = currentSeconds - previousSeconds;
-	//limit text update 4 times per second
+
 	if (elapsedSeconds > 0.25) {
 		previousSeconds = currentSeconds;
 		double fps = (double)frameCount / elapsedSeconds;

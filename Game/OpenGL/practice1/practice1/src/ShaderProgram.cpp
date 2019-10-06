@@ -32,6 +32,7 @@ bool ShaderProgram::loadShaders(const char* vsFilename, const char* fsFilename) 
 
 	glCompileShader(fs);
 	checkCompileErrors(fs, FRAGMENT);
+
 	//gen shaderprogram
 	mHandle = glCreateProgram();
 	if (mHandle == 0){
@@ -60,6 +61,7 @@ std::string ShaderProgram::fileToString(const std::string& filename) {
 	std::stringstream ss;
 	std::ifstream file;
 
+	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	try {
 		file.open(filename, std::ios::in);
 		if (!file.fail()) {
@@ -78,12 +80,12 @@ std::string ShaderProgram::fileToString(const std::string& filename) {
 void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type) {
 	int status = 0;
 	if (type == PROGRAM) {
-		glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
+		glGetProgramiv(shader, GL_LINK_STATUS, &status);
 		if (status == GL_FALSE) {
 			GLint length = 0;
-			glGetProgramiv(mHandle,GL_INFO_LOG_LENGTH, &length);
+			glGetProgramiv(shader,GL_INFO_LOG_LENGTH, &length);
 			std::string errorLog(length, ' ');
-			glGetProgramInfoLog(mHandle, length, &length, &errorLog[0]);
+			glGetProgramInfoLog(shader, length, &length, &errorLog[0]);
 			std::cerr << "Error! Program failed to link." << errorLog << std::endl;
 		}
 	}
@@ -91,9 +93,9 @@ void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type) {
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 		if (status == GL_FALSE) {
 			GLint length = 0;
-			glGetShaderiv(mHandle, GL_INFO_LOG_LENGTH, &length);
+			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
 			std::string errorLog(length, ' ');
-			glGetShaderInfoLog(mHandle, length, &length, &errorLog[0]);
+			glGetShaderInfoLog(shader, length, &length, &errorLog[0]);
 			std::cerr << "Error! Shader failed to compile." << errorLog << std::endl;
 		}
 	}
@@ -128,4 +130,19 @@ void ShaderProgram::setUniform(const GLchar* name, const glm::vec4& v) {
 void ShaderProgram::setUniform(const GLchar* name, const glm::mat4& m) {
 	GLint loc = getUniformLocation(name);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(m));
+}
+void ShaderProgram::setUniform(const GLchar* name, const GLfloat f){
+	GLint loc = getUniformLocation(name);
+	glUniform1f(loc, f);
+}
+void ShaderProgram::setUniform(const GLchar* name, const GLint v){
+	GLint loc = getUniformLocation(name);
+	glUniform1i(loc, v);
+}
+void ShaderProgram::setUniformSampler(const GLchar* name, const GLint& slot)
+{
+	glActiveTexture(GL_TEXTURE0 + slot);
+
+	GLint loc = getUniformLocation(name);
+	glUniform1i(loc, slot);
 }
