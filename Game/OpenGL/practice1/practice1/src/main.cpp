@@ -29,24 +29,14 @@ struct DestroyglfwWin {
 auto gWindow = std::unique_ptr<GLFWwindow, DestroyglfwWin>();
 
 bool gFullscreen = false;
-//const std::string texture1Filename = "textures/airplane.PNG";
-//const std::string texture2Filename = "textures/grid.jpg";
 
-
-//OrbitCamera orbitCamera;
-//const float MOUSE_SENSITIVITY = 0.25f;
-//float gYaw = 0.0f;
-//float gPitch = 0.0f;
-//float gRadius = 10.0f;
-
-FPSCamera fpsCamera(glm::vec3(0.0f, 3.0f, 10.0f));// , glm::vec3(-1.0, -1.0, -1.0));
+FPSCamera fpsCamera(glm::vec3(0.0f, 3.0f, 10.0f));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 10.0;
 const float MOUSE_SENSITIVITY = 0.25f;
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
 void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height);
-//void glfw_onMouseMove(GLFWwindow* window, double posX, double posY);
 void glfw_onMouseScroll(GLFWwindow* window, double deltaX, double deltaY);
 void update(double elapsedTime);
 void showFPS(GLFWwindow* window);
@@ -137,9 +127,6 @@ int main()
 		glm::mat4 model(1.0), view(1.0), projection(1.0);
 		view = fpsCamera.getViewMatrix();
 
-
-		/*projection = glm::perspective(glm::radians(60.0f), (float)gWindowWidth /
-			(float)gWindowHeight, 0.1f, 100.0f);*/
 		projection = glm::perspective(glm::radians(fpsCamera.getFOV()), 
 			(float)gWindowWidth / (float)gWindowHeight, 0.1f, 200.0f);
 
@@ -148,11 +135,6 @@ int main()
 		viewPos.y = fpsCamera.getPosition().y;
 		viewPos.z = fpsCamera.getPosition().z;
 
-		//glm::vec3 lightPos(0.0f, 1.0f, 10.0f);
-		//glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-
-		//angle += (float)deltaTime * 50.0f;
-		//lightPos.x = 8.0f * sinf(glm::radians(angle));
 
 		lightingShader.use();
 		lightingShader.setUniform("model", glm::mat4(1.0));
@@ -204,11 +186,6 @@ int main()
 		lightingShader.setUniform("spotLight.exponent", 0.017f);
 		lightingShader.setUniform("spotLight.on", gFlashlightOn);
 
-		//lightingProgram.use();
-		//lightingProgram.setUniform("model", model);
-		//lightingProgram.setUniform("view", view);
-		//lightingProgram.setUniform("projection", projection);
-
 		for (int i = 0; i < numModels; i++) {
 			model = glm::translate(glm::mat4(1.0), modelPos[i]) * 
 				glm::scale(glm::mat4(1.0), modelScale[i]);
@@ -223,30 +200,6 @@ int main()
 			mesh[i].draw();
 			texture[i].unbind(0);
 		}
-
-		//render the light
-		//model = glm::translate(glm::mat4(), lightPos);
-		//lightShader.use();
-		//lightShader.setUniform("lightColor", lightColor);
-		//lightShader.setUniform("model", model);
-		//lightShader.setUniform("view", view);
-		//lightShader.setUniform("projection", projection);
-		//lightMesh.draw();
-
-		////glBindVertexArray(vao);
-		////glDrawArrays(GL_TRIANGLES, 0, 36);
-		
-
-		////texture2.bind(0);
-		/*glm::vec3 floorPos;
-		floorPos.y = -1.0f;*/
-		////model = glm::translate(model, floorPos) * glm::scale(model, 
-		////	glm::vec3(10.0f, 0.01f, 10.0f));
-
-
-		//shaderProgram.setUniform("model", model);
-		////glDrawArrays(GL_TRIANGLES, 0, 36);
-		////glBindVertexArray(0);
 
 		glfwSwapBuffers(gWindow.get());
 		lastTime = currentTime;
@@ -271,9 +224,6 @@ bool initOpenGL() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	//auto gWindow = std::unique_ptr<GLFWwindow, DestroyglfwWin>();
-	//auto pWindow = std::make_unique<GLFWwindow>(glfwCreateWindow(gWindowWidth, gWindowHeight, APP_TITLE, NULL, NULL));
-
 	if (gFullscreen) {
 		GLFWmonitor* pMonitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* pVmode = glfwGetVideoMode(pMonitor);
@@ -292,9 +242,7 @@ bool initOpenGL() {
 
 	glfwMakeContextCurrent(gWindow.get());
 
-	//glfwSwapInterval(1);
 	glfwSetKeyCallback(gWindow.get(), glfw_onKey);
-	//glfwSetCursorPosCallback(gWindow.get(), glfw_onMouseMove);
 	glfwSetFramebufferSizeCallback(gWindow.get(), glfw_OnFrameBufferSize);
 	glfwSetScrollCallback(gWindow.get(), glfw_onMouseScroll);
 
@@ -307,7 +255,6 @@ bool initOpenGL() {
 		return false;
 	}
 
-	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClearColor(gClearColor.r, gClearColor.g, gClearColor.b, gClearColor.a);
 	glViewport(0, 0, gWindowWidth, gWindowHeight);
 	glEnable(GL_DEPTH_TEST);
@@ -340,24 +287,6 @@ void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, gWindowWidth, gWindowHeight);
 }
 
-//void glfw_onMouseMove(GLFWwindow* window, double posX, double posY) {
-//	static glm::vec2 lastMousePos = glm::vec2(0, 0);
-//
-//	if (glfwGetMouseButton(gWindow.get(), GLFW_MOUSE_BUTTON_LEFT) == 1) {
-//		gYaw -= ((float)posX - lastMousePos.x) * MOUSE_SENSITIVITY;
-//		gPitch += ((float)posY - lastMousePos.y) * MOUSE_SENSITIVITY;
-//	}
-//
-//	if (glfwGetMouseButton(gWindow.get(), GLFW_MOUSE_BUTTON_RIGHT) == 1) {
-//		float dx = 0.01f * ((float)posX - lastMousePos.x);
-//		float dy = 0.01f * ((float)posY - lastMousePos.y);
-//		gRadius += dx - dy;
-//	}
-//
-//	lastMousePos.x = (float)posX;
-//	lastMousePos.y = (float)posY;
-//
-//}
 
 void glfw_onMouseScroll(GLFWwindow* window, double deltaX, double deltaY)
 {
@@ -387,10 +316,8 @@ void update(double elapsedTime)
 		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getRight());
 
 	if (glfwGetKey(gWindow.get(), GLFW_KEY_Z) == GLFW_PRESS)
-		//fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getUp());
 		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * glm::vec3(0.0f, 1.0f, 0.0f));
 	else if (glfwGetKey(gWindow.get(), GLFW_KEY_X) == GLFW_PRESS)
-		//fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -fpsCamera.getUp());
 		fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
