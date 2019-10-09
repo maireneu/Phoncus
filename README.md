@@ -1,4 +1,4 @@
-# Unity Practice Game과 설명은 Game 폴더에 삽입되어 있습니다.
+# Unity & OpenGL Practice와 설명은 Game 폴더에 삽입되어 있습니다.
 Glitch Garden, Block Breaker등의 게임을 강의를 보면서 만들고, 튜닝하고, 유니티 사용법을 익혔습니다. 해당 게임의 내용은 Game 폴더의 ppt에 설명되어 있습니다.
 게임은 https://drive.google.com/drive/folders/1mpMwBQPAgkblBjYtx-cJbG7JrarCFQ3-?usp=sharing 에서 다운로드 가능합니다.
 
