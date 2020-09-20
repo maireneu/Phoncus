@@ -1,8 +1,4 @@
-# Unity & OpenGL Practice와 설명은 Game 폴더에 삽입되어 있습니다.
-Glitch Garden, Block Breaker등의 게임을 강의를 보면서 만들고, 튜닝하고, 유니티 사용법을 익혔습니다. 해당 게임의 내용은 Game 폴더의 ppt에 설명되어 있습니다.
-게임은 https://drive.google.com/drive/folders/1mpMwBQPAgkblBjYtx-cJbG7JrarCFQ3-?usp=sharing 에서 다운로드 가능합니다.
-
-# Phoncus 그외 폴더
+# Phoncus
 AndroidApp은 창업 최초로 서비스의 MVP를 구현하고자 만든 안드로이드 앱의 소스코드입니다.
 IntroActivity – HomeActivity – StrartActivity – ChoiceActivity – ResultActivity 로구성되며
 각각은 세부 Fragment와 연결되어있습니다.
